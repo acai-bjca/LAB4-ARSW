@@ -8,6 +8,7 @@ package blacklist;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,10 +17,10 @@ import java.util.logging.Logger;
  * @author hcadavid
  */
 public class HostBlackListsValidator {
-	private int checkedListsCount=0;
+	private AtomicInteger checkedListsCount;
 	private String ipaddress;
 	private AtomicInteger ocurrencesCount;
-	LinkedList<Integer> blackListOcurrences;
+	AtomicIntegerArray blackListOcurrences;
 	private int cantSer;
 	private  HostBlacklistsDataSourceFacade skds;
 
@@ -36,11 +37,12 @@ public class HostBlackListsValidator {
      * @return  Blacklists numbers where the given host's IP address was found.
      * @throws InterruptedException 
      */
-    public List<Integer> checkHost(String ipaddress, int cantidadThread) throws InterruptedException{
+    public AtomicIntegerArray checkHost(String ipaddress, int cantidadThread) throws InterruptedException{
         skds = HostBlacklistsDataSourceFacade.getInstance();
-        blackListOcurrences = new LinkedList();
+        blackListOcurrences = new AtomicIntegerArray(5);
         this.ipaddress = ipaddress;
-        this.ocurrencesCount = new AtomicInteger();
+        this.ocurrencesCount = new AtomicInteger(0);
+        this.checkedListsCount = new AtomicInteger(0);
         int cantServers = skds.getRegisteredServersCount();
         cantSer = cantServers;
         int listasPorThread = cantServers / cantidadThread; 
@@ -48,9 +50,9 @@ public class HostBlackListsValidator {
         SearchThread[] hilos = new SearchThread[cantidadThread];
         for(int h = 0; h<cantidadThread; h++) {
         	if(h == cantidadThread-1) {        		
-        		hilos[h] = new SearchThread(segmento, cantServers-1, ipaddress, h, skds, BLACK_LIST_ALARM_COUNT, ocurrencesCount);
+        		hilos[h] = new SearchThread(segmento, cantServers-1, ipaddress, h, skds, BLACK_LIST_ALARM_COUNT, ocurrencesCount, checkedListsCount, blackListOcurrences);
         	} else {        		
-        		hilos[h] = new SearchThread(segmento, segmento+listasPorThread-1, ipaddress, h, skds, BLACK_LIST_ALARM_COUNT, ocurrencesCount);
+        		hilos[h] = new SearchThread(segmento, segmento+listasPorThread-1, ipaddress, h, skds, BLACK_LIST_ALARM_COUNT, ocurrencesCount, checkedListsCount, blackListOcurrences);
         	}
         	segmento += listasPorThread;        	
         }
@@ -78,14 +80,7 @@ public class HostBlackListsValidator {
 
     private static final Logger LOG = Logger.getLogger(HostBlackListsValidator.class.getName());
 
-    public synchronized void setCheckedListsCount(){
-    	checkedListsCount++;
-	}
-	
-	public synchronized void setBlackListOcurrences(Integer i){
-		blackListOcurrences.add(i);
-	}
-	
+
 	public int getCantServidores(){
 		return cantSer;
 	} 

@@ -6,6 +6,7 @@
 package blacklist;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.lang.Runtime;
 
 /**
@@ -19,7 +20,8 @@ public class Main {
 		try {
 			int procesadores = Runtime.getRuntime().availableProcessors();
 			System.out.println(procesadores);
-			List<Integer> blackListOcurrences = hblv.checkHost("202.24.34.55", 200);
+			AtomicIntegerArray blackListOcurrences = hblv.checkHost("200.24.34.55", 200);
+			//205.27.34.55 Confiable    
 			//200.24.34.55
 			//202.24.34.55 No confiable
 			//212.24.24.55 Confiable
