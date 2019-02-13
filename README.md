@@ -1,14 +1,15 @@
 ## LAB4-Conceptos básicos de estilo de llamada / retorno (paralelismo y concurrencia)
+
 Integrantes: 
 		• Amalia Alfonso
 		• Daniel Rosales
-##Part I.I:
+## Part I.I:
 **1.** Ejecute y verifique cómo funciona el programa, Ejecute jVisualVM e inspeccione el uso de la CPU del proceso correspondiente.
 ¿Cuál es la razón de este consumo de CPU?
 ¿Cuál es la clase responsable de ese consumo?
 > Este consumo se genera porque el Consumer mientras espera recursos no hace nada más hasta que que el producer agregue datos, es decir que se queda en una espera activa, por eso la clase responsable de ese alto consumo de CPU es la clase Consumer.
 
-##Parte II:
+## Parte II:
 
 **2.** Compruebe el código e identifique cómo se implementó la funcionalidad indicada. Dado el propósito del juego, un invariante debe ser que la suma de los puntos de vida de todos los jugadores sea siempre la misma. (Por supuesto, en un momento en el que no se está realizando una operación de aumento / reducción de tiempo) . Para ese caso, para los jugadores N, ¿cuál debería ser ese valor?
 
