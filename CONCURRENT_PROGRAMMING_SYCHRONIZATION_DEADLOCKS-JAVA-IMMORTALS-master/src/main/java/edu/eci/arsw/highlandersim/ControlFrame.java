@@ -25,11 +25,12 @@ import javax.swing.JScrollBar;
 public class ControlFrame extends JFrame {
 
     private static final int DEFAULT_IMMORTAL_HEALTH = 100;
-    private static final int DEFAULT_DAMAGE_VALUE = 10;
+    private static final int DEFAULT_DAMAGE_VALUE = 11;
 
     private JPanel contentPane;
 
     private List<Immortal> immortals;
+    private List<Immortal> immortalsTemp;
 
     private JTextArea output;
     private JLabel statisticsLabel;
@@ -62,7 +63,7 @@ public class ControlFrame extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(0, 0));
         setContentPane(contentPane);
-
+        immortalsTemp = new LinkedList<>();
         JToolBar toolBar = new JToolBar();
         contentPane.add(toolBar, BorderLayout.NORTH);
 
@@ -71,12 +72,15 @@ public class ControlFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 immortals = setupInmortals();
-
+                ImmortalGarbage  immortalGarbage= new ImmortalGarbage(immortals);
+                
                 if (immortals != null) {
                     for (Immortal im : immortals) {
                         im.start();
+                       
                     }
                 }
+                immortalGarbage.start();
 
                 btnStart.setEnabled(false);
 
@@ -91,10 +95,10 @@ public class ControlFrame extends JFrame {
             		im.pausarInmortal(true);					
                 }
                 int sum = 0;
-                for (Immortal im : immortals) {
+                for (Immortal im : immortalsTemp) {
                     sum += im.getHealth();
                 }
-
+                System.out.println(immortals.size());
                 statisticsLabel.setText("<html>"+immortals.toString()+"<br>Health sum:"+ sum);
             }
         });
@@ -147,7 +151,9 @@ public class ControlFrame extends JFrame {
 
             for (int i = 0; i < ni; i++) {
                 Immortal i1 = new Immortal("im" + i, il, DEFAULT_IMMORTAL_HEALTH, DEFAULT_DAMAGE_VALUE,ucb);
+                immortalsTemp.add(i1);
                 il.add(i1);
+                
             }
             return il;
         } catch (NumberFormatException e) {
