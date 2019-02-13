@@ -1,4 +1,4 @@
-##LAB4-Conceptos básicos de estilo de llamada / retorno (paralelismo y concurrencia)
+## LAB4-Conceptos básicos de estilo de llamada / retorno (paralelismo y concurrencia)
 Integrantes: 
 		• Amalia Alfonso
 		• Daniel Rosales
