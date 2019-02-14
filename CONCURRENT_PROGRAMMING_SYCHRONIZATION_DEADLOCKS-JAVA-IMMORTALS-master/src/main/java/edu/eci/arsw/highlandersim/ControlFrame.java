@@ -66,29 +66,30 @@ public class ControlFrame extends JFrame {
         immortalsTemp = new LinkedList<>();
         JToolBar toolBar = new JToolBar();
         contentPane.add(toolBar, BorderLayout.NORTH);
-
-        final JButton btnStart = new JButton("Start");
+        
+        final JButton btnStart = new JButton("Start"); 
+        JButton btnPauseAndCheck = new JButton("Pause and check");
+        btnPauseAndCheck.setEnabled(false);
+        JButton btnResume = new JButton("Resume");
+        btnPauseAndCheck.setEnabled(false);
+        
         btnStart.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 immortals = setupInmortals();
                 ImmortalGarbage  immortalGarbage= new ImmortalGarbage(immortals);
-                
                 if (immortals != null) {
                     for (Immortal im : immortals) {
-                        im.start();
-                       
+                        im.start();                       
                     }
                 }
                 immortalGarbage.start();
-
                 btnStart.setEnabled(false);
+                btnPauseAndCheck.setEnabled(true);
 
             }
         });
         toolBar.add(btnStart);
 
-        JButton btnPauseAndCheck = new JButton("Pause and check");
         btnPauseAndCheck.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {                
             	for (Immortal im : immortals) {
@@ -98,18 +99,21 @@ public class ControlFrame extends JFrame {
                 for (Immortal im : immortalsTemp) {
                     sum += im.getHealth();
                 }
+                btnResume.setEnabled(true);
+                btnPauseAndCheck.setEnabled(false);
                 System.out.println(immortals.size());
                 statisticsLabel.setText("<html>"+immortals.toString()+"<br>Health sum:"+ sum);
             }
         });
         toolBar.add(btnPauseAndCheck);
 
-        JButton btnResume = new JButton("Resume");
         btnResume.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	for (Immortal im : immortals) {
             		im.pausarInmortal(false);					
-                }           	
+                }      
+            	btnResume.setEnabled(false);
+                btnPauseAndCheck.setEnabled(true);
             }
         });
 
@@ -125,6 +129,16 @@ public class ControlFrame extends JFrame {
 
         JButton btnStop = new JButton("STOP");
         btnStop.setForeground(Color.RED);
+        btnStop.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	for (Immortal im : immortals) {
+            		im.stop();				
+                }
+            	btnResume.setEnabled(false);
+            	btnPauseAndCheck.setEnabled(false);
+            	btnStart.setEnabled(false);
+            }
+        });
         toolBar.add(btnStop);
 
         scrollPane = new JScrollPane();

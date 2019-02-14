@@ -13,7 +13,6 @@ public class Immortal extends Thread {
 	private final String name;
 	private final Random r = new Random(System.currentTimeMillis());
 	private boolean pausar;
-	private boolean isBeingAttacked;
 	private AtomicBoolean sincronizado;
 	private boolean alive;
 
@@ -25,7 +24,6 @@ public class Immortal extends Thread {
 		this.health = health;
 		this.defaultDamageValue = defaultDamageValue;
 		this.pausar = false;
-		this.isBeingAttacked = false;
 		sincronizado = new AtomicBoolean(false);
 		alive = true;
 	}
@@ -54,8 +52,7 @@ public class Immortal extends Thread {
 
 			this.fight(im);
 
-			try {
-				// Thread.sleep(1);
+			try {				
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -63,17 +60,17 @@ public class Immortal extends Thread {
 		}
 	}
 
-	// Estan sumando y restando a la misma vez si los dos this y i2 se están
-	// atacanco al mismo tiempo
+	// Estan sumando y restando a la misma vez si los dos (this y i2) se están atacanco al mismo tiempo
 	public void fight(Immortal i2) {
-		if(i2.getAlive()) {
+		if (i2.getAlive()) {
 			if (i2.getHealth() > 0) {
+				// System.identityHashCode(this) = this.hashCode();
 				if (this.hashCode() < i2.hashCode()) {
 					synchronized (this) {
 						// si ningun hilo esta usando a este hilo, entonces se hace esto:
 						synchronized (i2) {
 							i2.changeHealth(i2.getHealth() - defaultDamageValue);
-							this.health += defaultDamageValue;						
+							this.health += defaultDamageValue;
 						}
 					}
 				} else {
@@ -82,19 +79,15 @@ public class Immortal extends Thread {
 						synchronized (this) {
 							i2.changeHealth(i2.getHealth() - defaultDamageValue);
 							this.health += defaultDamageValue;
-							
 						}
 					}
 				}
 				updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
-				
 			} else {
-				//muerto = true;			
 				updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
 				i2.setAlive(false);
 			}
 		}
-		
 	}
 
 	public void changeHealth(int v) {
@@ -122,11 +115,11 @@ public class Immortal extends Thread {
 	public void setSinchronized(boolean s) {
 		sincronizado.set(s);
 	}
-	
+
 	public boolean getAlive() {
 		return alive;
 	}
-	
+
 	public void setAlive(boolean alive) {
 		this.alive = alive;
 	}
